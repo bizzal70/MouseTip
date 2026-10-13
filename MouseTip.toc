@@ -1,0 +1,11 @@
+## Interface: 16001
+## Title: MouseTip
+## Notes: Shows tooltips at the mouse cursor instead of the corner of the screen. Type /mousetip.
+## Author: bizzal70
+## Version: 0.1.0
+## SavedVariables: MouseTipDB
+## IconTexture: Interface\Icons\INV_Misc_Note_01
+## AddonCompartmentFunc: MouseTip_OnAddonCompartmentClick
+
+Core.lua
+Options.lua
