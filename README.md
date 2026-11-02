@@ -35,7 +35,7 @@ Other small addons for World of Warcraft: Forever, all free:
 
 ## Installing
 
-Copy this folder into `World of Warcraft\_classic_beta_\Interface\AddOns\` as `MouseTip`, restart the game, and enable MouseTip on the character select screen.
+Copy this folder into `World of Warcraft\_forever_\Interface\AddOns\` as `MouseTip`, restart the game, and enable MouseTip on the character select screen.
 
 ## Developing
 
