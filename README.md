@@ -10,7 +10,7 @@ Tooltips for buttons, bag items and spells already appear beside what you point 
 
 ## Options
 
-Type `/mousetip` to open the options, or use the addon's entry in the minimap's addon list.
+Type `/mousetip` (or `/mtip`) to open the options, or use the addon's entry in the minimap's addon list.
 
 | Setting | What it does | Command |
 |---|---|---|
