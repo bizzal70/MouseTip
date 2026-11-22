@@ -22,6 +22,10 @@ Type `/mousetip` (or `/mtip`) to open the options, or use the addon's entry in t
 
 - During combat the game restricts what addons may do. If it refuses to move a tooltip, the tooltip stays where the game put it.
 
+## Controller
+
+With a game controller, the **B** button closes the MouseTip options, like the X and Escape do. While a window is open, B closes it; once it is closed, B goes back to whatever you have it set to. (In combat the game does not let addons change a button, so B goes back to normal when the fight ends.)
+
 ## More from this author
 
 Other small addons for World of Warcraft: Forever, all free:
