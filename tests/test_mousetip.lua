@@ -78,3 +78,24 @@ local ns2 = LoadAddon(ADDON_DIR, "MouseTip")
 MouseTipDB = { enabled = false }
 Fire("ADDON_LOADED", "MouseTip")
 check(ns2.db.enabled == false and ns2.db.position == "above", "saved choices are kept and new settings get defaults")
+
+-- The controller's B button closes the addon's windows while they are shown.
+do
+    local bound = {}
+    SetOverrideBinding = function(owner, _, key, command) bound[owner] = { key = key, command = command } end
+    ClearOverrideBindings = function(owner) bound[owner] = nil end
+    local w = CreateFrame("Frame", "PadCloseTestWindow", UIParent)
+    w.HookScript = function(self, event, fn)
+        local previous = self.__scripts[event]
+        self.__scripts[event] = previous and function(...) previous(...); fn(...) end or fn
+    end
+    w:Hide()
+    ns.CloseWithPadB(w, "PadCloseTestWindow")
+    w:Show(); w.__scripts.OnShow(w)
+    check(bound[w] and bound[w].key == "PAD2" and bound[w].command == "CLICK PadCloseTestWindowPadClose:LeftButton",
+        "while a window is shown, the controller's B button is set to close it")
+    w.padClose.__scripts.OnClick(w.padClose)
+    check(not w:IsShown(), "pressing B closes it")
+    w.__scripts.OnHide(w)
+    check(bound[w] == nil, "and B gets its usual job back once it is closed")
+end
