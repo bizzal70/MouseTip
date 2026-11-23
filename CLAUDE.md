@@ -37,3 +37,7 @@ Everything below, unless marked verified, comes from community sources during th
 ## Controller B closes windows (2026-11-22)
 
 - `ns.CloseWithPadB(window, name)` in PadClose.lua (first in the TOC): every window listed in `UISpecialFrames` also calls it. While the window is shown, `SetOverrideBinding(window, true, "PAD2", "CLICK <name>PadClose:LeftButton")` points the controller's B at an invisible, mouse-disabled button that hides it; `ClearOverrideBindings(window)` on hide. On PLAYER_REGEN_DISABLED (still allowed then) every override is cleared, so B is never borrowed in a fight; PLAYER_REGEN_ENABLED borrows it again for open windows. Any new window: add it to UISpecialFrames and call `ns.CloseWithPadB` right after. Not yet confirmed in game.
+
+## Controller corner (0.2.0, 2026-11-23)
+
+- User request: with a gamepad, tooltips default to the lower right corner. `ns.padActive` follows GAME_PAD_ACTIVE_CHANGED (registered with pcall; starts false = mouse until the game says otherwise); when `db.padCorner` (default true) and padActive, `MoveToCursor` sets ANCHOR_NONE and BOTTOMRIGHT of UIParent at the game's own offsets (-CONTAINER_OFFSET_X - 13, CONTAINER_OFFSET_Y). Options row + `/mousetip pad`. Whether Forever fires GAME_PAD_ACTIVE_CHANGED on the Legion Go is not yet seen in game.

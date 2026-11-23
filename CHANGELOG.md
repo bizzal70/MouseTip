@@ -1,5 +1,9 @@
 # MouseTip
 
+## 0.2.0
+
+- **With a controller, tooltips go to the lower right corner** of the screen, where there is no mouse pointer to follow. As soon as you use the mouse again they follow the cursor; pick up the controller and they go back to the corner. On by default; turn it off in the options (**With a controller: lower right corner**) or with `/mousetip pad`.
+
 ## 0.1.3
 
 - **Controller:** when a fight starts, B goes straight back to its usual job, even with a MouseTip window open (it used to stay on closing the window until the fight ended). It closes the window again once the fight is over.

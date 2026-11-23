@@ -60,13 +60,15 @@ local rows = {}
 for _, f in ipairs(Frames()) do
     if rawget(f, "Refresh") and f.__scripts.OnClick then rows[#rows + 1] = f end
 end
-check(#rows == 3, "the options have three controls")
+check(#rows == 4, "the options have four controls")
 rows[1].__scripts.OnClick(rows[1]); check(ns.db.enabled ~= before[1], "the first switches the addon off and on")
 rows[1].__scripts.OnClick(rows[1])
 rows[2].__scripts.OnClick(rows[2]); check(ns.db.inCombat ~= before[2], "the second switches combat")
 rows[2].__scripts.OnClick(rows[2])
-rows[3].__scripts.OnClick(rows[3]); check(ns.db.position == "right", "the third steps to the next position")
-rows[3].__scripts.OnClick(rows[3]); rows[3].__scripts.OnClick(rows[3])
+rows[3].__scripts.OnClick(rows[3]); check(ns.db.padCorner == false, "the third switches the controller corner")
+rows[3].__scripts.OnClick(rows[3])
+rows[4].__scripts.OnClick(rows[4]); check(ns.db.position == "right", "the fourth steps to the next position")
+rows[4].__scripts.OnClick(rows[4]); rows[4].__scripts.OnClick(rows[4])
 check(ns.db.position == "above", "and comes back round to the first")
 MouseTip_OnAddonCompartmentClick()
 check(not MouseTipOptions:IsShown(), "the minimap addon list entry toggles the options")
@@ -120,4 +122,26 @@ do
     Fire("PLAYER_REGEN_ENABLED")
     check(bound[w] == "PAD2", "and borrowed again once the fight is over")
     w:Hide(); w.__scripts.OnHide(w)
+end
+
+-- With a controller, tooltips go to the lower right corner by default.
+do
+    local ns3 = ns2
+    check(ns3.db.padCorner == true, "the controller corner is on by default")
+    ns3.db.enabled = true
+    Fire("GAME_PAD_ACTIVE_CHANGED", true)
+    local placed
+    local tip = { SetOwner = function(self, ...) self.__owner = { ... } end, ClearAllPoints = function() end,
+        SetPoint = function(_, ...) placed = { ... } end }
+    GameTooltip_SetDefaultAnchor(tip, UIParent)
+    check(tip.__owner[2] == "ANCHOR_NONE" and placed and placed[1] == "BOTTOMRIGHT" and placed[3] == "BOTTOMRIGHT",
+        "using a controller puts world tooltips in the lower right corner")
+    Fire("GAME_PAD_ACTIVE_CHANGED", false)
+    GameTooltip_SetDefaultAnchor(tip, UIParent)
+    check(tip.__owner[2] == "ANCHOR_CURSOR", "back on the mouse, they follow the cursor again")
+    SlashCmdList.MOUSETIP("pad")
+    Fire("GAME_PAD_ACTIVE_CHANGED", true)
+    GameTooltip_SetDefaultAnchor(tip, UIParent)
+    check(ns3.db.padCorner == false and tip.__owner[2] == "ANCHOR_CURSOR", "/mousetip pad turns the corner off: the cursor even with a controller")
+    Fire("GAME_PAD_ACTIVE_CHANGED", false)
 end

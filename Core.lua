@@ -18,7 +18,14 @@ local defaults = {
     -- Whether tooltips also follow the mouse during combat.
     inCombat = true,
     position = "above",
+    -- While a controller is what is being used: the lower right corner.
+    padCorner = true,
 }
+
+-- Whether a controller is the input being used right now. The game says
+-- so (GAME_PAD_ACTIVE_CHANGED) whenever it switches between the controller
+-- and the mouse and keyboard; until then, the mouse is assumed.
+ns.padActive = false
 
 function ns.Print(msg)
     print("|cffd9a066MouseTip|r: " .. tostring(msg))
@@ -38,6 +45,16 @@ local function MoveToCursor(tooltip, parent)
     if not db or not db.enabled then return end
     if not db.inCombat and InCombatLockdown() then return end
     if tooltip.IsForbidden and tooltip:IsForbidden() then return end
+    if db.padCorner and ns.padActive then
+        -- Playing with a controller: there is no mouse pointer to follow,
+        -- so the lower right corner of the screen, out of the way.
+        pcall(function()
+            tooltip:SetOwner(parent or UIParent, "ANCHOR_NONE")
+            tooltip:ClearAllPoints()
+            tooltip:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -(CONTAINER_OFFSET_X or 0) - 13, CONTAINER_OFFSET_Y or 0)
+        end)
+        return
+    end
     local position = ns.Position()
     -- If the client refuses (it restricts some things in combat), the
     -- tooltip simply stays where the game put it.
@@ -50,8 +67,9 @@ local function Describe()
     if not ns.db.enabled then
         return "Tooltips are in the game's usual place."
     end
-    return ("Tooltips appear %s%s."):format(ns.Position().label:lower(),
-        ns.db.inCombat and "" or ", except in combat")
+    return ("Tooltips appear %s%s%s."):format(ns.Position().label:lower(),
+        ns.db.inCombat and "" or ", except in combat",
+        ns.db.padCorner and "; with a controller, in the lower right corner" or "")
 end
 
 SLASH_MOUSETIP1 = "/mousetip"
@@ -69,6 +87,8 @@ SlashCmdList.MOUSETIP = function(msg)
         ns.db.enabled = not ns.db.enabled
     elseif command == "combat" then
         ns.db.inCombat = not ns.db.inCombat
+    elseif command == "pad" or command == "controller" or command == "gamepad" then
+        ns.db.padCorner = not ns.db.padCorner
     elseif command == "above" or command == "right" or command == "left" then
         ns.db.position = command
     else
@@ -76,6 +96,7 @@ SlashCmdList.MOUSETIP = function(msg)
         ns.Print("/mousetip on, off or toggle - tooltips at the mouse, or in the game's usual place")
         ns.Print("/mousetip above, right or left - where the tooltip sits beside the cursor")
         ns.Print("/mousetip combat - whether tooltips also follow the mouse in combat")
+        ns.Print("/mousetip pad - with a controller, tooltips in the lower right corner (on) or at the cursor")
         return
     end
     ns.Print(Describe())
@@ -89,7 +110,12 @@ end
 
 local frame = CreateFrame("Frame")
 frame:RegisterEvent("ADDON_LOADED")
-frame:SetScript("OnEvent", function(self, _, loaded)
+pcall(frame.RegisterEvent, frame, "GAME_PAD_ACTIVE_CHANGED")
+frame:SetScript("OnEvent", function(self, event, loaded)
+    if event == "GAME_PAD_ACTIVE_CHANGED" then
+        ns.padActive = loaded and true or false
+        return
+    end
     if loaded ~= addonName then return end
     MouseTipDB = MouseTipDB or {}
     for key, value in pairs(defaults) do

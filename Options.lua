@@ -74,7 +74,7 @@ end
 
 local function CreateWindow()
     window = CreateFrame("Frame", addonName .. "Options", UIParent)
-    window:SetSize(328, 168)
+    window:SetSize(328, 196)
     window:SetPoint("CENTER")
     window:SetFrameStrata("HIGH")
     window:SetToplevel(true)
@@ -114,8 +114,12 @@ local function CreateWindow()
         function() return "In combat too" end,
         function() return ns.db.inCombat end,
         function() ns.db.inCombat = not ns.db.inCombat end)
+    CreateRow(window, -102, true,
+        function() return "With a controller: lower right corner" end,
+        function() return ns.db.padCorner end,
+        function() ns.db.padCorner = not ns.db.padCorner end)
     -- Cycles through the positions.
-    CreateRow(window, -110, false,
+    CreateRow(window, -138, false,
         function() return "Position: " .. ns.Position().label end,
         nil,
         function()

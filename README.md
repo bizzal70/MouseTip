@@ -16,6 +16,7 @@ Type `/mousetip` (or `/mtip`) to open the options, or use the addon's entry in t
 |---|---|---|
 | Show tooltips at the mouse | Turns the addon on or off | `/mousetip on`, `off`, `toggle` |
 | In combat too | Whether tooltips also follow the mouse during combat | `/mousetip combat` |
+| With a controller: lower right corner | While you play with a controller (no mouse pointer to follow), tooltips go to the lower right corner of the screen; back on the mouse, they follow the cursor again. On by default | `/mousetip pad` |
 | Position | Above, to the right of, or to the left of the cursor | `/mousetip above`, `right`, `left` |
 
 ## Known limits
@@ -23,6 +24,8 @@ Type `/mousetip` (or `/mtip`) to open the options, or use the addon's entry in t
 - During combat the game restricts what addons may do. If it refuses to move a tooltip, the tooltip stays where the game put it.
 
 ## Controller
+
+While you play with a controller, tooltips for things in the world go to the lower right corner of the screen instead of following a mouse pointer that is not there. The moment you use the mouse again they follow the cursor. Turn this off with `/mousetip pad` or in the options.
 
 With a game controller, the **B** button closes the MouseTip options, like the X and Escape do. While a window is open, B closes it; once it is closed, B goes back to whatever you have it set to. When a fight starts, B goes straight back to its usual job, even with the window open.
 
