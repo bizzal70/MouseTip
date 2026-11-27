@@ -1,0 +1,8 @@
+<Bindings>
+	<Binding name="MOUSETIP_OPTIONS" header="MOUSETIP" category="ADDONS">
+		MouseTip_ToggleOptions()
+	</Binding>
+	<Binding name="MOUSETIP_TOGGLE" category="ADDONS">
+		MouseTip_Toggle()
+	</Binding>
+</Bindings>

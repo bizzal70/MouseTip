@@ -1,6 +1,6 @@
 # MouseTip
 
-Shows tooltips at the mouse cursor instead of the corner of the screen. An addon for World of Warcraft: Forever (client 1.60.x).
+Shows tooltips at the mouse cursor instead of the corner of the screen, and switches to the corner by itself when you pick up a controller. An addon for World of Warcraft: Forever (client 1.60.x), made for PCs and handhelds alike (Legion Go, Steam Deck, ROG Ally).
 
 ## What it does
 
@@ -10,7 +10,7 @@ Tooltips for buttons, bag items and spells already appear beside what you point 
 
 ## Options
 
-Type `/mousetip` (or `/mtip`) to open the options, or use the addon's entry in the minimap's addon list.
+Type `/mousetip` (or `/mtip`) to open the options, use the addon's entry in the minimap's addon list, find it in the game's **Options > AddOns**, or set a key for it in Key Bindings.
 
 | Setting | What it does | Command |
 |---|---|---|
@@ -18,14 +18,17 @@ Type `/mousetip` (or `/mtip`) to open the options, or use the addon's entry in t
 | In combat too | Whether tooltips also follow the mouse during combat | `/mousetip combat` |
 | With a controller: lower right corner | While you play with a controller (no mouse pointer to follow), tooltips go to the lower right corner of the screen; back on the mouse, they follow the cursor again. On by default | `/mousetip pad` |
 | Position | Above, to the right of, or to the left of the cursor | `/mousetip above`, `right`, `left` |
+| Size with the mouse / with a controller | Tooltip text size, set apart for each (bigger on a handheld, the usual size on a PC). At 100% the game's own size is left alone | `/mousetip size` (for the input in use) |
 
 ## Known limits
 
 - During combat the game restricts what addons may do. If it refuses to move a tooltip, the tooltip stays where the game put it.
+- Another addon that places tooltips itself (ElvUI, TipTac and similar) will pull against MouseTip; MouseTip says so once if it finds one. Turn placement off in one of the two.
+- `/mousetip debug` prints the version and settings, handy for a bug report.
 
 ## Controller
 
-While you play with a controller, tooltips for things in the world go to the lower right corner of the screen instead of following a mouse pointer that is not there. The moment you use the mouse again they follow the cursor. Turn this off with `/mousetip pad` or in the options.
+While you play with a controller, tooltips for things in the world go to the lower right corner of the screen instead of following a mouse pointer that is not there. The moment you use the mouse again they follow the cursor. After logging in it starts the way you last played on that computer, so a handheld starts in the corner. Turn this off with `/mousetip pad` or in the options.
 
 With a game controller, the **B** button closes the MouseTip options, like the X and Escape do. While a window is open, B closes it; once it is closed, B goes back to whatever you have it set to. When a fight starts, B goes straight back to its usual job, even with the window open.
 

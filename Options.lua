@@ -74,8 +74,14 @@ end
 
 local function CreateWindow()
     window = CreateFrame("Frame", addonName .. "Options", UIParent)
-    window:SetSize(328, 196)
-    window:SetPoint("CENTER")
+    window:SetSize(328, 252)
+    -- Where you last put it, or the middle.
+    local saved = ns.db.optionsPoint
+    if type(saved) == "table" and saved[1] then
+        window:SetPoint(saved[1], UIParent, saved[2], saved[3], saved[4])
+    else
+        window:SetPoint("CENTER")
+    end
     window:SetFrameStrata("HIGH")
     window:SetToplevel(true)
     window:EnableMouse(true)
@@ -83,7 +89,11 @@ local function CreateWindow()
     window:SetClampedToScreen(true)
     window:RegisterForDrag("LeftButton")
     window:SetScript("OnDragStart", window.StartMoving)
-    window:SetScript("OnDragStop", window.StopMovingOrSizing)
+    window:SetScript("OnDragStop", function(self)
+        self:StopMovingOrSizing()
+        local point, _, relativePoint, x, y = self:GetPoint()
+        ns.db.optionsPoint = { point, relativePoint, x, y }
+    end)
     window:Hide()
     Fill(window, 0.05, 0.05, 0.06, 0.97)
     Outline(window, 0.55)
@@ -130,6 +140,15 @@ local function CreateWindow()
                 end
             end
         end)
+    -- Tooltip size, cycled, separately for the mouse and a controller.
+    CreateRow(window, -170, false,
+        function() return "Size with the mouse: " .. ns.ScaleLabel(ns.db.scaleMouse) end,
+        nil,
+        function() ns.NextScale("scaleMouse") end)
+    CreateRow(window, -200, false,
+        function() return "Size with a controller: " .. ns.ScaleLabel(ns.db.scalePad) end,
+        nil,
+        function() ns.NextScale("scalePad") end)
 end
 
 function ns.RefreshOptions()
@@ -147,3 +166,29 @@ function ns.ToggleOptions()
         window:Show()
     end
 end
+
+-- Listed in the game's own Options > AddOns, with a button that opens this
+-- window: that's where many players look first.
+local function RegisterSettings()
+    if not (Settings and Settings.RegisterCanvasLayoutCategory and Settings.RegisterAddOnCategory) then return end
+    local panel = CreateFrame("Frame")
+    local title = panel:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    title:SetPoint("TOPLEFT", 16, -16)
+    title:SetText("MouseTip")
+    local text = panel:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+    text:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -8)
+    text:SetWidth(520)
+    text:SetJustifyH("LEFT")
+    text:SetText("Shows tooltips for things in the world at the mouse instead of the corner of the screen; with a controller, in the lower right corner.")
+    local open = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
+    open:SetSize(220, 26)
+    open:SetPoint("TOPLEFT", text, "BOTTOMLEFT", 0, -12)
+    open:SetText("Open MouseTip's options")
+    open:SetScript("OnClick", function()
+        if SettingsPanel and SettingsPanel.IsShown and SettingsPanel:IsShown() and HideUIPanel then pcall(HideUIPanel, SettingsPanel) end
+        ns.ToggleOptions()
+    end)
+    local category = Settings.RegisterCanvasLayoutCategory(panel, "MouseTip")
+    Settings.RegisterAddOnCategory(category)
+end
+pcall(RegisterSettings)

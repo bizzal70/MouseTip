@@ -1,8 +1,8 @@
 ## Interface: 16001
 ## Title: MouseTip
-## Notes: Shows tooltips at the mouse cursor instead of the corner of the screen. Type /mousetip.
+## Notes: Shows tooltips at the mouse cursor instead of the corner of the screen, and switches to the corner when you pick up a controller. Type /mousetip.
 ## Author: bizzal70
-## Version: 0.2.0
+## Version: 0.3.0
 ## SavedVariables: MouseTipDB
 ## X-Curse-Project-ID: 1743831
 ## IconTexture: Interface\Icons\INV_Misc_Note_01

@@ -60,7 +60,7 @@ local rows = {}
 for _, f in ipairs(Frames()) do
     if rawget(f, "Refresh") and f.__scripts.OnClick then rows[#rows + 1] = f end
 end
-check(#rows == 4, "the options have four controls")
+check(#rows == 6, "the options have six controls")
 rows[1].__scripts.OnClick(rows[1]); check(ns.db.enabled ~= before[1], "the first switches the addon off and on")
 rows[1].__scripts.OnClick(rows[1])
 rows[2].__scripts.OnClick(rows[2]); check(ns.db.inCombat ~= before[2], "the second switches combat")
@@ -145,3 +145,49 @@ do
     check(ns3.db.padCorner == false and tip.__owner[2] == "ANCHOR_CURSOR", "/mousetip pad turns the corner off: the cursor even with a controller")
     Fire("GAME_PAD_ACTIVE_CHANGED", false)
 end
+
+-- 0.3.0: the input last used, tooltip size, another tooltip addon.
+do
+    local ns3 = ns2
+    -- The controller was the last input: remembered for the next login.
+    Fire("GAME_PAD_ACTIVE_CHANGED", true)
+    check(MouseTipDB.lastPad == true, "the input in use is remembered")
+    local again = LoadAddon(ADDON_DIR, "MouseTip")
+    Fire("ADDON_LOADED", "MouseTip")
+    check(again.padActive == true, "after a new login it starts on the controller, before any switch")
+    Fire("GAME_PAD_ACTIVE_CHANGED", false)
+    check(again.padActive == false and MouseTipDB.lastPad == false, "and still follows a switch to the mouse")
+    -- Tooltip size.
+    local ns = again
+    local scaled
+    rawset(GameTooltip, "SetScale", function(_, s) scaled = s end)
+    ns.ApplyScale(GameTooltip)
+    check(scaled == nil, "at 100% the tooltip's size is left alone")
+    SlashCmdList.MOUSETIP("size")
+    check(ns.db.scaleMouse == 1.15, "/mousetip size steps the mouse size up")
+    ns.ApplyScale(GameTooltip)
+    check(scaled == 1.15, "and the tooltip takes it")
+    Fire("GAME_PAD_ACTIVE_CHANGED", true)
+    ns.ApplyScale(GameTooltip)
+    check(scaled == 1, "the controller has its own size (still 100%, so set back)")
+    SlashCmdList.MOUSETIP("size")
+    ns.ApplyScale(GameTooltip)
+    check(ns.db.scalePad == 1.15 and scaled == 1.15, "/mousetip size with a controller sets the controller size")
+    Fire("GAME_PAD_ACTIVE_CHANGED", false)
+    -- Another addon that places tooltips.
+    C_AddOns = C_AddOns or {}
+    C_AddOns.IsAddOnLoaded = function(name) return name == "TipTac" end
+    MouseTipDB.warnedOther = nil
+    local said = #PRINTED
+    Fire("PLAYER_LOGIN")
+    local found = false
+    for i = said + 1, #PRINTED do if PRINTED[i]:find("TipTac also places tooltips", 1, true) then found = true end end
+    check(found, "another tooltip addon is mentioned once")
+    said = #PRINTED
+    Fire("PLAYER_LOGIN")
+    local repeated = false
+    for i = said + 1, #PRINTED do if PRINTED[i]:find("also places tooltips", 1, true) then repeated = true end end
+    check(not repeated, "and not again")
+    check(type(MouseTip_ToggleOptions) == "function" and type(MouseTip_Toggle) == "function", "key bindings for the options and on/off")
+end
+
